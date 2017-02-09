@@ -5,7 +5,7 @@ var preload = function(game) {
 var gameWidth = 1000;
 var gameHeight = 600;
 
-
+var game;
 
 ///////////////////////////////////////////////////////////////////////////
 ////                         ///////////////////////////////////////////////
@@ -35,9 +35,27 @@ var redTiles = [27, 28, 28, 30, 31, 32, 33, 34, 35, 36, 37]
 var blueTiles = [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
 var greenTiles = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
 
+///////////////////////////////////////////////////////////////////
+////                 ///////////////////////////////////////////////
+/////   Google Font   ///////////////////////////////////////////////
+//////                 ///////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+
+WebFontConfig = {
+
+    active: function() { game.time.events.add(Phaser.Timer.SECOND); },
+
+    google: {
+      families: ['VT323']
+    }
+
+};
+
 
 preload.prototype = {
   preload: function() {
+    game = this.game
+    this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
     this.game.load.tilemap('map', 'assets/world/csv/Tutorial-NewTiles.csv', null, Phaser.Tilemap.CSV);
 
@@ -65,6 +83,6 @@ preload.prototype = {
   },
 
   create: function() {
-    this.game.state.start("mainMenu");
+    this.game.state.start("mainMenuState");
   }
 }

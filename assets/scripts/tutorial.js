@@ -1,128 +1,6 @@
 var tutorial = function(game) {
 }
 
-var game;
-
-
-/////////////////////////////////////////////////////////////////////
-////                   ///////////////////////////////////////////////
-/////   Map Resources   ///////////////////////////////////////////////
-//////                   ///////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-
-var mapColor;
-var mapBW;
-var tilesColor;
-var tilesBW;
-var layerColor;
-var layerBW;
-
-
-////////////////////////////////////////////////////////////////////////
-////                      ///////////////////////////////////////////////
-/////   Sprite Resources   ///////////////////////////////////////////////
-//////                      ///////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////
-////                      ///////
-/////   Protag Resources   ///////
-//////                      //////
-///////////////////////////////////
-
-var protagColor;
-var protagBW;
-var protagRed;
-var protagBlue;
-var protagGreen;
-var activeProtags;
-var allProtags;
-
-var bwTint;
-var bwAlpha;
-var bwTintCache;
-var bwAlphaCache;
-
-var colorTint;
-var colorAlpha;
-var colorTintCache;
-var colorAlphaCache;
-
-var colorStock;
-
-var protagsUsed;
-var facing;
-
-var animationSpeed = 20;  // fps
-var playerVelocity = 200;
-
-////////////////////////////
-////                   //////
-/////   Other Sprites   //////
-//////                   //////
-////////////////////////////////
-
-var bluePower;
-var redPower;
-var greenPower;
-
-var wallRight1;
-var wallRight2;
-var wallRight3;
-var walls;
-
-
-/////////////////////////////////////////////////////////////////////////
-////                              ////////////////////////////////////////
-/////   Game Mechanics Components  ////////////////////////////////////////
-//////                              ////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-
-var greenLevers;
-var blueLevers;
-var redLevers;
-var stopLever;
-
-var levelScore;
-var cachedScore = 0;
-
-var blueOrbs;
-var redOrbs;
-var greenOrbs;
-
-var cursors;
-var enterButton;
-
-var currentLevel;
-
-////////////////////////////////////////////////////////////////
-////                     ////////////////////////////////////////
-/////   In-Game Display   ////////////////////////////////////////
-//////                     ////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
-var floor;
-
-var redMarkers;
-var greenMarkers;
-var blueMarkers;
-
-
-////////////////////////////////////////////////////////////////
-////                     ////////////////////////////////////////
-/////   Pause Menu        ////////////////////////////////////////
-//////                     ////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
-var pauseItem1;
-var pauseItem2;
-var pauseItem3;
-var pauseItems;
-var selectorArrow;
-var itemSelect;
-
-
-
 tutorial.prototype = {
   create: function() {
 
@@ -143,18 +21,10 @@ tutorial.prototype = {
 
     mapColor.addTilesetImage('tilesColor');
     mapBW.addTilesetImage('tilesBW');
-    console.log(mapColor.layer)
 
     layerColor = mapColor.createLayer(0);
     layerBW = mapBW.createLayer(0);
 
-
-    //
-    //
-    // layerBW.fixedToCamera = false;
-    // layerColor.fixedToCamera = true;
-
-    console.log(mapColor.layer);
 
     layerColor.alpha = 1
     layerBW.alpha = 1;
@@ -307,11 +177,38 @@ tutorial.prototype = {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    game.input.keyboard.addCallbacks(this, null, null, this.keyPress);
+    rKey = game.input.keyboard.addKey(Phaser.Keyboard.R);
+    bKey = game.input.keyboard.addKey(Phaser.Keyboard.B);
+    gKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
+    spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    rKey.onDown.add(function(){
+      this.colorKeydown(protagRed, redOrbs, 0xAA0000, redCollision)
+    })
+
+    gKey.onDown.add(function(){
+      this.colorKeydown(protagGreen, greenOrbs, 0x00AA00, greenCollision)
+    })
+
+    bKey.onDown.add(function(){
+      this.colorKeydown(protagBlue, blueOrbs, 0x0000AA, blueCollision)
+    })
+
+    spacebar.onDown.add(function(){
+      spaceKeydown()
+    })
+
+
+
+
+
+    // game.input.keyboard.addCallbacks(this, null, null, this.keyPress);
 
     enterButton = game.input.keyboard.addKey(Phaser.Keyboard.ENTER)
 
-    enterButton.onDown.add(this.pressEnter)
+    escapeButton = game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+
+    escapeButton.onDown.add(this.pressEscape)
 
 
     //////////////////////////////////////////////////////////////////////
@@ -320,7 +217,7 @@ tutorial.prototype = {
     //////                   ////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
-    var boxHeight = 66;
+    boxHeight = 66;
 
     floor = game.add.graphics(0, 0)
 
@@ -624,14 +521,14 @@ tutorial.prototype = {
     })
 
 
-    //////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     if (greenLevers === 0 && redLevers === 0 && blueLevers === 0 && stopLever === 0) {
       this.killWall();
       stopLever = 1;
     }
 
-    //////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
 
     //////////////////////////////////////////////////////////////////////
@@ -639,7 +536,6 @@ tutorial.prototype = {
     /////  In-Game Display  ////////////////////////////////////////////////
     //////                   ////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-
 
     font.text = 'Score: ' + (levelScore + cachedScore).toString();
 
@@ -695,106 +591,30 @@ tutorial.prototype = {
   //////////////////////////////////////////////////////////////////
 
 
-  keyPress: function(char) {
-    console.log(char)
-    switch(char) {
-      case 'r':
-        this.colorKeydown(protagRed, redOrbs, 0xAA0000, redCollision)
-        break;
-
-      case 'g':
-        this.colorKeydown(protagGreen, greenOrbs, 0x00AA00, greenCollision);
-        break;
-
-      case 'b':
-        this.colorKeydown(protagBlue, blueOrbs, 0x0000AA, blueCollision);
-        break;
-
-      case ' ':
-        this.spaceKeydown()
-        break;
-
-      default:
-        break;
-
-    }
-  },
-
-  colorKeydown: function(protag, orbs, tint, collisionSet) {
-    if (orbs < 1) {
-
-      console.log("no orbs!")
-
-    } else {
-
-      if (activeProtags[0] !== protag) {
-        var protagHasBeenUsed = protagsUsed.some(function(protagInList) {
-          return (protagInList === protag)
-        })
-        if (!protagHasBeenUsed) {
-          bwTint -= tint;
-          bwAlpha -= .1 * orbs;
-          // colorAlpha -= .1 * orbs;
-          colorTint -= tint;
-
-          protag.x = protagColor.x;
-          protag.y = protagColor.y
-
-          colorStock -= 1;
-          if (colorStock === 0) {
-            colorAlpha = 0;
-            bwAlpha = 0;
-          }
-
-          protagsUsed.push(protag);
-        }
-
-        protag.alpha = .5 + .1 * orbs;
-        activeProtags = [protag];
-      }
-
-      mapColor.setCollisionByExclusion([26], false, layerColor, true);
-      mapBW.setCollisionByExclusion([26], false, layerBW, true);
-
-      mapColor.setCollision(collisionTiles.concat(collisionSet));
-      mapBW.setCollision(collisionTiles.concat(collisionSet));
-
-      return;
-
-    }
-
-  },
-
-  spaceKeydown: function() {
-    allProtags.forEach(function(protag) {
-      protag.alpha = 0;
-    });
-    protagColor.x = activeProtags[0].x;
-    protagColor.y = activeProtags[0].y;
-    protagBW.x = activeProtags[0].x;
-    protagBW.y = activeProtags[0].y;
-
-    colorAlpha = colorAlphaCache;
-    colorTint = colorTintCache;
-    bwAlpha = bwAlphaCache;
-    bwTint = bwTintCache;
-
-    colorStock = 3;
-    protagsUsed = [];
-    activeProtags = [protagColor, protagBW];
-
-    redActive = false;
-    blueActive = false;
-    greenActive = false;
-    colorActive = activeProtags[0] === protagColor;
-
-    mapColor.setCollisionByExclusion([26], false, layerColor, true);
-    mapBW.setCollisionByExclusion([26], false, layerBW, true);
-
-    mapColor.setCollision(collisionTiles.concat(colorCollision));
-    mapBW.setCollision(collisionTiles.concat(colorCollision));
-  },
-
+  // keyPress: function(char) {
+  //   console.log(char)
+  //   switch(char) {
+  //     case 'r':
+  //       this.colorKeydown(protagRed, redOrbs, 0xAA0000, redCollision)
+  //       break;
+  //
+  //     case 'g':
+  //       this.colorKeydown(protagGreen, greenOrbs, 0x00AA00, greenCollision);
+  //       break;
+  //
+  //     case 'b':
+  //       this.colorKeydown(protagBlue, blueOrbs, 0x0000AA, blueCollision);
+  //       break;
+  //
+  //     case ' ':
+  //       this.spaceKeydown()
+  //       break;
+  //
+  //     default:
+  //       break;
+  //
+  //   }
+  // },
 
 
 
@@ -830,6 +650,7 @@ tutorial.prototype = {
 
   winLevel: function() {
     mapColor.setTileIndexCallback(124, function(){})
+
     allProtags.forEach(function(protag) {
       protag.animations.play('win')
     });
@@ -850,9 +671,9 @@ tutorial.prototype = {
 
 
 
-  pressEnter: function() {
-    game.paused = !game.paused
-    if (game.paused) {
+  pressEscape: function() {
+    if (!game.paused) {
+      game.paused = true;
       itemSelect = 1;
       pauseMenu = game.add.graphics(0, 0)
       pauseMenu.beginFill(0xFF0000, 1)
@@ -871,7 +692,7 @@ tutorial.prototype = {
       pauseMenu.drawRect(100+game.camera.x, 100+game.camera.y, gameWidth-200, gameHeight-200)
       pauseMenu.endFill()
 
-      var style = {font:"bold 32px courier", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
+      var style = {font:"bold 36px VT323", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
 
       pauseItem1 = game.add.text(200+game.camera.x, 150+game.camera.y, "Main Menu", style);
       pauseItem2 = game.add.text(200+game.camera.x, 250+game.camera.y, "Continue", style);
@@ -881,7 +702,7 @@ tutorial.prototype = {
 
       var colors = [0xFF0000, 0x00FF00, 0x0000FF]
 
-      selectorArrow = game.add.sprite(140+game.camera.x, 218+game.camera.y, 'protagBW')
+      selectorArrow = game.add.sprite(125+game.camera.x, 225+game.camera.y, 'protagBW')
       selectorArrow.tint = 0x00FF00;
       selectorArrow.frame = 159;
       // selectorArrow.beginFill(0x00FF00)
@@ -900,7 +721,7 @@ tutorial.prototype = {
         selectorArrow.destroy()
         pauseItems[itemSelect%pauseItems.length].alpha = 1;
 
-        selectorArrow = game.add.sprite(145+game.camera.x, 118+game.camera.y+(itemSelect%pauseItems.length)*100, 'protagBW')
+        selectorArrow = game.add.sprite(125+game.camera.x, 125+game.camera.y+(itemSelect%pauseItems.length)*100, 'protagBW')
         selectorArrow.tint = colors[itemSelect%pauseItems.length]
         selectorArrow.frame = 159;
 
@@ -915,7 +736,7 @@ tutorial.prototype = {
         selectorArrow.destroy()
         pauseItems[itemSelect%pauseItems.length].alpha = 1;
 
-        selectorArrow = game.add.sprite(145+game.camera.x, 118+game.camera.y+(itemSelect%pauseItems.length)*100, 'protagBW')
+        selectorArrow = game.add.sprite(125+game.camera.x, 125+game.camera.y+(itemSelect%pauseItems.length)*100, 'protagBW')
         selectorArrow.tint = colors[itemSelect%pauseItems.length]
         selectorArrow.frame = 159;
 
@@ -935,9 +756,13 @@ tutorial.prototype = {
 
       pauseItem2.alpha = 1
 
+      enterButton.onDown.add(pressEnter)
+
+
 
 
     } else {
+      game.paused = false;
       pauseMenu.destroy();
       pauseItems.forEach(function(item){
         item.destroy();
@@ -945,23 +770,7 @@ tutorial.prototype = {
       selectorArrow.destroy();
       cursors.up.reset(true);
       cursors.down.reset(true);
-      switch(itemSelect%pauseItems.length) {
-        case 0:
-          console.log("go to main menu")
-          game.state.start("mainMenu");
-          break;
-        case 1:
-          console.log("continue selected, do nothing")
-          break;
-        case 2:
-          console.log("restart level selected");
-          game.state.start("tutorial")
-          break;
-        default:
-          console.log("error with select")
-          console.log(itemSelect, pauseItems.length);
-          console.log(itemSelect % pauseItems.length)
-      }
+      enterButton.reset(true);
     }
   },
 
@@ -971,44 +780,4 @@ tutorial.prototype = {
 
   }
 
-}
-
-
-function bluePowerConsume(_protagBW, _bluePower) {
-  levelScore += 25;
-  _bluePower.kill();
-  blueOrbs += 1;
-  console.log(layerBW)
-  console.log(game)
-  protagBW.tint += 0x000011;
-  protagBW.alpha -= .1;
-  layerBW.tint -= 0x222200;
-  layerBW.alpha -= .1;
-  console.log(layerBW)
-}
-
-function redPowerConsume(_protagBW, _redPower) {
-  levelScore += 25;
-  _redPower.kill();
-  redOrbs += 1;
-
-  protagBW.tint += 0x001100;
-  protagBW.alpha -= .1;
-  layerBW.tint -= 0x002222;
-  layerBW.alpha -= .1;
-}
-
-function greenPowerConsume(_protagBW, _greenPower) {
-
-  levelScore += 25;
-  _greenPower.kill();
-  greenOrbs += 1;
-
-  bwTint -= 0x220022;
-  bwTintCache -= 0x220022;
-  bwAlpha -= .1;
-  bwAlphaCache -= .1;
-
-  layerBW.tint -= 0x222200;
-  layerBW.alpha -= .1;
 }
