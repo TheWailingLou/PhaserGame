@@ -3,26 +3,13 @@ var mainMenuState = function(game) {
 
 }
 
+var userInput = "";
+var userName;
+
 
 mainMenuState.prototype = {
-
-  shutdown: function() {
-    console.log("is this working?")
-    this.create()
-
-  },
-
-  shutDown: function() {
-    console.log("is this working? AAAAAH")
-    this.create()
-
-  },
-
   create: function() {
     game = this.game;
-
-    // game.paused = true;
-    console.log(game)
 
     mainMenu = game.add.graphics(0, 0);
     mainMenu.beginFill(0xFF0000);
@@ -110,32 +97,34 @@ mainMenuState.prototype = {
 
   },
 
+  update: function() {
+    if (userName) {
+      userName.text = userInput;
+    }
+
+
+  },
+
   menuEnter: function() {
+    menuItems.forEach(function(item){
+      item.destroy();
+    })
+    selectorArrow.destroy();
+    cursors.up.reset(true);
+    cursors.down.reset(true);
+    enterButton.reset(true);
     switch (menuItemSelect%menuItems.length) {
       case 0:
-        console.log("New Game Selected.")
+
+        console.log("New Game Selected.");
+        beginNewGame("Welcome. Please enter your name:")
         break;
       case 1:
         console.log("tutorial selected")
-        mainMenu = null;
-        menuItems.forEach(function(item){
-          item.destroy();
-        })
-        selectorArrow.destroy();
-        cursors.up.reset(true);
-        cursors.down.reset(true);
-        enterButton.reset(true);
         game.state.start("tutorial")
         game.paused = false;
         break;
       case 2:
-        menuItems.forEach(function(item){
-          item.destroy();
-        })
-        selectorArrow.destroy();
-        cursors.up.reset(true);
-        cursors.down.reset(true);
-        enterButton.reset(true);
         console.log("leaderboard selected");
         displayLeaderboard();
       default:
@@ -144,6 +133,114 @@ mainMenuState.prototype = {
   },
 
 
+
+}
+
+
+
+function beginNewGame(welcomeText) {
+  userName = null;
+  userInput = ""
+  var style = {font:"40px VT323", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
+
+  var prompt = game.add.text(0, -100, welcomeText, style);
+
+  prompt.setTextBounds(9+game.camera.x, 9, gameWidth-18+game.camera.y, gameHeight-18);
+  $(document).on('keydown', function(event) {
+     $(this).unbind('keydown')
+  });
+
+  userName = game.add.text(0, 100, userInput, style);
+  userName.setTextBounds(9+game.camera.x, 9, gameWidth-18+game.camera.y, gameHeight-18);
+  game.input.keyboard.addCallbacks(this, null, null, nameEntry);
+  delButton = game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE)
+  delButton.onDown.add(function(){
+    userInput = userInput.substring(0, userInput.length - 1);
+  })
+  enterButton.reset(true)
+  enterButton.onDown.add(function(){
+    prompt.destroy();
+    userName.destroy();
+    confirmName()
+  })
+}
+
+
+function confirmName() {
+  if (userInput.length < 1) {
+    beginNewGame("Your name must contain at least one character. \n Please enter your name:");
+  } else if (userInput.length > 12) {
+    beginNewGame("Your name can't be over 12 characters. \n Please enter your name:");
+  } else {
+    $(document).on('keydown', function(event) {
+       event.preventDefault();
+    });
+
+    var style = {font:"40px VT323", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
+
+    var nameCorrect = game.add.text(0, -100, userInput + "... Is that correct?", style);
+
+    nameCorrect.setTextBounds(9+game.camera.x, 9, gameWidth-18+game.camera.y, gameHeight-18);
+
+    var yes = game.add.text(-50, 50, "YES", style);
+
+    yes.setTextBounds(9+game.camera.x, 9, gameWidth-18+game.camera.y, gameHeight-18);
+
+    var no = game.add.text(50, 50, "NO", style);
+
+    no.setTextBounds(9+game.camera.x, 9, gameWidth-18+game.camera.y, gameHeight-18);
+
+    yes.alpha = .4;
+    no.alpha = 1;
+
+    var areYouSureSelector = 0;
+
+    cursors.left.onDown.add(function(){
+
+      if (areYouSureSelector === 0) {
+        areYouSureSelector = 1;
+        yes.alpha = 1;
+        no.alpha = .4
+      } else {
+        areYouSureSelector = 0;
+        yes.alpha = .4;
+        no.alpha = 1;
+      }
+
+    })
+
+    cursors.right.onDown.add(function(){
+
+      if (areYouSureSelector === 0) {
+        areYouSureSelector = 1;
+        yes.alpha = 1;
+        no.alpha = .4
+      } else {
+        areYouSureSelector = 0;
+        yes.alpha = .4;
+        no.alpha = 1;
+      }
+
+    })
+
+
+    enterButton.reset(true)
+
+    enterButton.onDown.add(function() {
+
+      if (areYouSureSelector === 1) {
+
+        nameCorrect.destroy()
+        alert("you picked yes")
+      } else {
+        yes.destroy();
+        no.destroy();
+        nameCorrect.destroy();
+
+        beginNewGame("Please enter your name:");
+      }
+    })
+  }
 
 }
 
@@ -163,6 +260,10 @@ mainMenuState.prototype = {
 //   console.log(result)
 // }
 var leaderboardData;
+
+function nameEntry(char) {
+  userInput += char;
+}
 
 function displayLeaderboard() {
   console.log("enterButton");

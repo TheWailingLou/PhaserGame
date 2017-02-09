@@ -1,6 +1,10 @@
 
 var game;
 
+var cachedScore = 0;
+
+var playerName;
+
 
 /////////////////////////////////////////////////////////////////////
 ////                   ///////////////////////////////////////////////
@@ -82,7 +86,6 @@ var redLevers;
 var stopLever;
 
 var levelScore;
-var cachedScore = 0;
 
 var blueOrbs;
 var redOrbs;
