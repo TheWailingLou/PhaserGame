@@ -97,6 +97,8 @@ var escapeButton;
 
 var currentLevel;
 
+var levelWon;
+
 ////////////////////////////////////////////////////////////////
 ////                     ////////////////////////////////////////
 /////   In-Game Display   ////////////////////////////////////////
@@ -108,6 +110,11 @@ var floor;
 var redMarkers;
 var greenMarkers;
 var blueMarkers;
+
+var redMarkersUsed;
+var greenMarkersUsed;
+var blueMarkersUsed;
+
 
 var boxHeight;
 

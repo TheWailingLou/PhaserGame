@@ -12,7 +12,7 @@ function pressEnter() {
     case 0:
       console.log("go to main menu")
       var popUp = game.add.graphics(0, 0);
-      areYouSure("mainMenuState")
+      areYouSure("mainMenuState", 0)
       break;
     case 1:
       console.log("continue selected, do nothing")
@@ -20,7 +20,7 @@ function pressEnter() {
       break;
     case 2:
       console.log("restart level selected");
-      areYouSure("tutorial")
+      areYouSure(currentLevel, cachedScore)
       break;
     default:
       console.log("error with select")
@@ -30,7 +30,7 @@ function pressEnter() {
 }
 
 
-function areYouSure(gameState) {
+function areYouSure(gameState, scoreEquals) {
   var areYouSureSelector = 0;
   var popUp = game.add.graphics(0, 0);
   popUp.beginFill(0xFF0000)
@@ -89,12 +89,19 @@ function areYouSure(gameState) {
     }
 
   })
+  enterButton.reset(true);
 
   enterButton.onDown.add(function() {
     if (areYouSureSelector === 1) {
       console.log("yes Selected");
-      console.log(gameState)
+
+      game.input.keyboard.removeKey(Phaser.Keyboard.R);
+      game.input.keyboard.removeKey(Phaser.Keyboard.G);
+      game.input.keyboard.removeKey(Phaser.Keyboard.B);
+      game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+
       game.paused = false;
+      cachedScore = scoreEquals;
       game.state.start(gameState)
     } else {
       console.log("no Selected")
@@ -109,26 +116,27 @@ function areYouSure(gameState) {
     }
   })
 
-
-  // game.state.start("mainMenuState");
 }
 
 
 
 function bluePowerConsume(_protagBW, _bluePower) {
+  blueOrbCollected = true;
+
   levelScore += 25;
   _bluePower.kill();
   blueOrbs += 1;
-  console.log(layerBW)
-  console.log(game)
+
   protagBW.tint += 0x000011;
   protagBW.alpha -= .1;
   layerBW.tint -= 0x222200;
   layerBW.alpha -= .1;
-  console.log(layerBW)
+
 }
 
 function redPowerConsume(_protagBW, _redPower) {
+  redOrbCollected = true;
+
   levelScore += 25;
   _redPower.kill();
   redOrbs += 1;
@@ -140,6 +148,7 @@ function redPowerConsume(_protagBW, _redPower) {
 }
 
 function greenPowerConsume(_protagBW, _greenPower) {
+  greenOrbCollected = true;
 
   levelScore += 25;
   _greenPower.kill();

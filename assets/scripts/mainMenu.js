@@ -126,7 +126,7 @@ mainMenuState.prototype = {
         break;
       case 2:
         console.log("leaderboard selected");
-        displayLeaderboard();
+        displayLeaderboard(true);
       default:
         break;
     }
@@ -229,9 +229,9 @@ function confirmName() {
     enterButton.onDown.add(function() {
 
       if (areYouSureSelector === 1) {
-
+        playerName = userInput;
         nameCorrect.destroy()
-        alert("you picked yes")
+        game.state.start("level_1", true, false, playerName)
       } else {
         yes.destroy();
         no.destroy();
@@ -265,7 +265,7 @@ function nameEntry(char) {
   userInput += char;
 }
 
-function displayLeaderboard() {
+function displayLeaderboard(showBackButton) {
   console.log("enterButton");
   var topTen = leaderboardData.slice(0, 10);
   var style = {font:"40px VT323", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
@@ -293,9 +293,12 @@ function displayLeaderboard() {
     scoreBoxAndText.push(playerNames)
     scoreBoxAndText.push(playerScores)
   })
-  var sprite = game.add.sprite(gameWidth/2-300, gameHeight/2-100, 'protagBW');
-  sprite.frame = 77;
-  var backText = game.add.text(gameWidth/2-300, gameHeight/2, 'Back', style);
+  if (showBackButton) {
+    var sprite = game.add.sprite(gameWidth/2-300, gameHeight/2-100, 'protagBW');
+    sprite.frame = 77;
+    var backText = game.add.text(gameWidth/2-300, gameHeight/2, 'Back', style);
+  }
+
 
   enterButton.onDown.add(function(){
     // game.state.getCurrentState().create()

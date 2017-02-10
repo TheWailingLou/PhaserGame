@@ -58,6 +58,9 @@ preload.prototype = {
     this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
     this.game.load.tilemap('map', 'assets/world/csv/Tutorial-NewTiles.csv', null, Phaser.Tilemap.CSV);
+    this.game.load.tilemap('L1map', 'assets/world/csv/Level1.csv', null, Phaser.Tilemap.CSV);
+    this.game.load.tilemap('L2map', 'assets/world/csv/Level2.csv', null, Phaser.Tilemap.CSV);
+    this.game.load.tilemap('L3map', 'assets/world/csv/Level3.csv', null, Phaser.Tilemap.CSV);
 
     this.game.load.image('tilesColor', 'assets/world/tiles/tilesColor.png');
     this.game.load.image('tilesBW', 'assets/world/tiles/tilesBW.png');
@@ -68,6 +71,12 @@ preload.prototype = {
     this.game.load.image('greenMarker', 'assets/sprites/greenMarker.png')
     this.game.load.image('redMarker', 'assets/sprites/redMarker.png')
 
+    this.game.load.image('blueMarkerUsed', 'assets/sprites/blueMarkerUsed.png')
+    this.game.load.image('greenMarkerUsed', 'assets/sprites/greenMarkerUsed.png')
+    this.game.load.image('redMarkerUsed', 'assets/sprites/redMarkerUsed.png')
+
+    this.game.load.atlasJSONHash('arrow', 'assets/sprites/arrow.png', 'assets/sprites/arrow.json');
+
     this.game.load.atlasJSONHash('protagColor', 'assets/sprites/protagColor.png', 'assets/sprites/protagColor.json');
     this.game.load.atlasJSONHash('protagBW', 'assets/sprites/protagBW.png', 'assets/sprites/protagBW.json');
 
@@ -75,14 +84,14 @@ preload.prototype = {
     this.game.load.atlasJSONHash('greenPower', 'assets/sprites/greenPower.png', 'assets/sprites/powerOrb.json');
     this.game.load.atlasJSONHash('redPower', 'assets/sprites/redPower.png', 'assets/sprites/powerOrb.json');
 
-    this.game.load.atlasJSONHash('wall', 'assets/sprites/wall.png', 'assets/sprites/wall.json');
-
+    this.game.load.atlasJSONHash('wallUp', 'assets/sprites/wallUp.png', 'assets/sprites/wallUp.json');
     this.game.load.atlasJSONHash('wallRight', 'assets/sprites/wallRight.png', 'assets/sprites/wallRight.json');
-
     this.game.load.atlasJSONHash('wallLeft', 'assets/sprites/wallLeft.png', 'assets/sprites/wallLeft.json');
+    this.game.load.atlasJSONHash('wallDown', 'assets/sprites/wallDown.png', 'assets/sprites/wallDown.json');
   },
 
   create: function() {
+    // this.game.state.start("mainMenuState");
     this.game.state.start("mainMenuState");
   }
 }

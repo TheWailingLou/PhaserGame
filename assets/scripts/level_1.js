@@ -1,46 +1,20 @@
-var tutorial = function(game) {
+var level_1 = function(game) {
 }
 
+var timeStart;
+var timeEnd;
+var timeDiff;
 
-
-
-
-var tutorialTextArr = [
-  "Welcome to the tutorial. Press enter to continue.",
-]
-
-var directionalsUsed = false;
-
-var redOrbCollected = false;
-var rButtonPushed = false;
-var redLeverSwitched = false;
-
-var greenOrbCollected = false;
-var gButtonPushed = false;
-var greenLeverSwitched = false;
-
-var blueOrbCollected = false;
-var bButtonPushed = false;
-var blueLeverSwitched = false;
-
-var spacebarUsed = false;
-
-var arrow1;
-var arrow2;
-
-
-
-var textIndex = 0;
-
-tutorial.prototype = {
+level_1.prototype = {
   create: function() {
-    levelWon = false;
+    console.log(playerName)
+    levelWon = false
 
     game = this.game
 
     console.log(game);
 
-    currentLevel = "tutorial";
+    currentLevel = "level_1";
 
     ////////////////////////////////////////////////////////////
     ////         ////////////////////////////////////////////////
@@ -48,8 +22,8 @@ tutorial.prototype = {
     //////         ////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
 
-    mapColor = game.add.tilemap('map', 32, 32);
-    mapBW = game.add.tilemap('map', 32, 32)
+    mapColor = game.add.tilemap('L1map', 32, 32);
+    mapBW = game.add.tilemap('L1map', 32, 32)
 
     mapColor.addTilesetImage('tilesColor');
     mapBW.addTilesetImage('tilesBW');
@@ -81,25 +55,23 @@ tutorial.prototype = {
 
     // add all sprites //
 
+    protagColor = game.add.sprite(176, 128, 'protagColor');
+    protagBW = game.add.sprite(176, 128, 'protagBW');
 
+    protagRed = game.add.sprite(176, 128, 'protagBW');
+    protagBlue = game.add.sprite(176, 128, 'protagBW');
+    protagGreen = game.add.sprite(176, 128, 'protagBW');
 
-    protagColor = game.add.sprite(608, 32, 'protagColor');
-    protagBW = game.add.sprite(608, 32, 'protagBW');
+    bluePower1 = game.add.sprite(608, 480, 'bluePower');
+    bluePower2 = game.add.sprite(608, 512, 'bluePower');
+    greenPower1 = game.add.sprite(480, 384, 'greenPower');
+    greenPower2 = game.add.sprite(480, 416, 'greenPower');
+    redPower1 = game.add.sprite(642, 448, 'redPower');
+    redPower2 = game.add.sprite(674, 448, 'redPower');
 
-    protagRed = game.add.sprite(608, 32, 'protagBW');
-    protagBlue = game.add.sprite(608, 32, 'protagBW');
-    protagGreen = game.add.sprite(608, 32, 'protagBW');
-
-    bluePower1 = game.add.sprite(800, 256, 'bluePower');
-    bluePower2 = game.add.sprite(800, 288, 'bluePower');
-    greenPower1 = game.add.sprite(672, 256, 'greenPower');
-    greenPower2 = game.add.sprite(672, 288, 'greenPower');
-    redPower1 = game.add.sprite(544, 256, 'redPower');
-    redPower2 = game.add.sprite(544, 288, 'redPower');
-
-    wallRight1 = game.add.sprite(832, 224, 'wallRight');
-    wallRight2 = game.add.sprite(832, 192, 'wallRight');
-    wallRight3 = game.add.sprite(832, 160, 'wallRight');
+    wallRight1 = game.add.sprite(576, 224, 'wallRight');
+    wallRight2 = game.add.sprite(576, 192, 'wallRight');
+    // wallRight3 = game.add.sprite(576, 160, 'wallRight');
 
 
 
@@ -111,7 +83,7 @@ tutorial.prototype = {
     greenPower = [greenPower1, greenPower2]
     redPower = [redPower1, redPower2]
     orbs = [bluePower1, bluePower2, greenPower1, greenPower2,redPower1, redPower2]
-    walls = [wallRight1, wallRight2, wallRight3]
+    walls = [wallRight1, wallRight2]
 
 
 
@@ -199,9 +171,9 @@ tutorial.prototype = {
     //////                              ///////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    greenLevers = 1;
-    blueLevers = 1;
-    redLevers = 1;
+    greenLevers = 2;
+    blueLevers = 2;
+    redLevers = 2;
     stopLever = 0;
 
     levelScore = 0;
@@ -222,23 +194,14 @@ tutorial.prototype = {
 
     rKey.onDown.add(function(){
       this.colorKeydown(protagRed, redOrbs, 0xAA0000, redCollision)
-      if (activeProtags[0] === protagRed) {
-        rButtonPushed = true;
-      }
     })
 
     gKey.onDown.add(function(){
       this.colorKeydown(protagGreen, greenOrbs, 0x00AA00, greenCollision)
-      if (activeProtags[0] === protagGreen) {
-        gButtonPushed = true;
-      }
     })
 
     bKey.onDown.add(function(){
       this.colorKeydown(protagBlue, blueOrbs, 0x0000AA, blueCollision)
-      if (activeProtags[0] === protagBlue) {
-        bButtonPushed = true;
-      }
     })
 
     spacebar.onDown.add(function(){
@@ -252,50 +215,6 @@ tutorial.prototype = {
     // game.input.keyboard.addCallbacks(this, null, null, this.keyPress);
 
     enterButton = game.input.keyboard.addKey(Phaser.Keyboard.ENTER)
-    enterButton.reset(true)
-    enterButton.onDown.add(function() {
-      textIndex += 1;
-      switch(textIndex){
-        case 3:
-        // "Good. Now collect one of the red orbs."
-          arrow1.alpha = 1;
-          break;
-        case 4:
-          arrow1.alpha = 0;
-          break;
-        case 5:
-          arrow1.x = 480;
-          arrow1.y = 512;
-          arrow1.alpha = 1;
-          break;
-        case 5:
-          arrow1.alpha = 0;
-          break;
-        case 7:
-          arrow3.alpha = 1;
-          break;
-        case 8:
-          arrow3.alpha = 0;
-          arrow1.alpha = 0;
-          arrow2.alpha = 0;
-          break;
-        case 13:
-          arrow1.x = 736;
-          arrow1.y = 512;
-          arrow1.alpha = 1;
-          break;
-        case 14:
-          arrow1.alpha = 0;
-          break;
-        case 15:
-          arrow1.destroy();
-          arrow2.destroy();
-          arrow3.destroy();
-
-        default:
-          break;
-      }
-    })
 
     escapeButton = game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 
@@ -308,16 +227,10 @@ tutorial.prototype = {
     //////                   ////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
-
-    ////////////////////////////////
-    ////                    /////////
-    /////  Main Display      /////////
-    //////                    /////////
-    ////////////////////////////////////
-
     boxHeight = 66;
 
     floor = game.add.graphics(0, 0)
+
 
     // Main Box //
 
@@ -449,108 +362,12 @@ tutorial.prototype = {
     scoreText.width = 64;
     scoreText.height = 64;
 
-
-
-    ////////////////////////////////
-    ////                    /////////
-    /////  Tutorial Display  /////////
-    //////                    /////////
-    ////////////////////////////////////
-
-    arrow1 = game.add.sprite(512, 256, "arrow")
-    arrow1.animations.add("pointing", [0,1,2,3,4])
-    arrow1.animations.play("pointing", 8, true);
-    arrow1.alpha = 0;
-
-    arrow2 = game.add.sprite(736, 512, "arrow")
-    arrow2.animations.add("pointing", [0,1,2,3,4])
-    arrow2.animations.play("pointing", 8, true);
-    arrow2.alpha = 0;
-
-    arrow3 = game.add.sprite((gameWidth/3-32), gameHeight-64, "arrow")
-    arrow3.animations.add("pointing", [0,1,2,3,4])
-    arrow3.animations.play("pointing", 8, true);
-    arrow3.alpha = 0;
-    arrow3.fixedToCamera = true;
-
-
-    tutorialDisplay = game.add.graphics(0, 0)
-
-    tutorialDisplay.beginFill(0xAA0000, 1)
-    tutorialDisplay.drawRect(0, 0, 374, 224)
-    tutorialDisplay.endFill()
-
-    tutorialDisplay.beginFill(0x00AA00, 1)
-    tutorialDisplay.drawRect(3, 3, 368, 218)
-    tutorialDisplay.endFill()
-
-    tutorialDisplay.beginFill(0x0000AA, 1)
-    tutorialDisplay.drawRect(6, 6, 362, 212)
-    tutorialDisplay.endFill()
-
-    tutorialDisplay.beginFill(0x000000, 1)
-    tutorialDisplay.drawRect(9, 9, 356, 206)
-    tutorialDisplay.endFill()
-
-    tutorialDisplay.fixedToCamera = true;
-
-    var style = {font:"32px VT323", fill: "#FFFFFF", boundsAlignH: "center", boundsAlignV: "middle", wordWrap: true, wordWrapWidth: 356 };
-
-    tutorialTextObject = game.add.text(0, 0, tutorialTextArr[textIndex%tutorialTextArr.length], style);
-
-    tutorialTextObject.setTextBounds(9, 9, 356, 206);
-
-    tutorialTextObject.fixedToCamera = true;
-
-
+    timeStart = new Date();
 
   },
 
 
   update: function() {
-
-
-
-
-    var tutorialTextArrWork = [
-      "Welcome to the tutorial. Press enter to continue.",
-      "You can press the ESCAPE button at any time to return to the main menu.",
-      "You can use directional arrows to move.",
-      "Collect one of the red orbs.",
-      "Good. Now you can turn into your red character by pressing R.",
-      "You're doing great. These tiles are levers..",
-      "Using your red character, stand on it to switch it.",
-      "When you stand on a lever, it consusmes an orb.",
-      "Now move north, past the red tiles, and press the SPACEBAR.",
-      "When you press space, it brings your characters back together.",
-      "Don't forget that you can always use the ESCAPE button to restart the level.",
-      "Now collect the blue and green orbs.",
-      "Great! Now switch into your blue character by pressing B",
-      "Now press the blue lever.",
-      "Good! Now switch to your green character and switch the green lever.",
-      "Great! The wall has been taken down. Follow the gold path to complete the tutorial.",
-      "",
-      "",
-      "",
-      "",
-      "",
-    ]
-    //   "Welcome to the tutorial. Press enter to continue.",
-    //   "You can press the ESCAPE button at any time to return to the main menu."
-    //   "You can use directional arrows to move.",
-    //   "Good. Now collect one of the red orbs.",
-    //   "Good. Now you can turn into your red character by pressing R.",
-    //   "You're doing great. These tiles are levers..",
-    //   "Using your red character, stand on it to switch it."
-    //   "When you stand on one, it uses an orb.",
-    //   "You can not change INTO a color that you have no orbs of.",
-    //   ""
-    // ]
-
-
-    tutorialTextObject.text = tutorialTextArrWork[textIndex%tutorialTextArrWork.length];
-    // console.log(tutorialTextArrWork[textIndex%tutorialTextArrWork.length])
-
 
     /////////////////////////////////////////////////////////////////////
     ////                  ////////////////////////////////////////////////
@@ -576,7 +393,6 @@ tutorial.prototype = {
     })
 
     if (cursors.left.isDown) {
-      directionalsUsed = true;
 
       // Left //
 
@@ -598,7 +414,7 @@ tutorial.prototype = {
       })
 
     } else if (cursors.right.isDown) {
-      directionalsUsed = true;
+
 
 
       // Right //
@@ -622,7 +438,7 @@ tutorial.prototype = {
 
 
     } else if (cursors.down.isDown) {
-      directionalsUsed = true;
+
 
 
       // Down //
@@ -645,7 +461,6 @@ tutorial.prototype = {
       })
 
     } else if (cursors.up.isDown) {
-      directionalsUsed = true;
 
 
 
@@ -765,13 +580,11 @@ tutorial.prototype = {
     /////  In-Game Display  ////////////////////////////////////////////////
     //////                   ////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-
     if (!levelWon) {
       font.text = 'Score: ' + (levelScore + cachedScore).toString();
     } else {
       font.text = 'Score: ' + cachedScore.toString();
     }
-
 
 
     for (var i=0; i<10; i++) {
@@ -805,6 +618,7 @@ tutorial.prototype = {
       } else {
         blueMarkers[i].alpha = 0;
       }
+
 
     }
 
@@ -882,7 +696,6 @@ tutorial.prototype = {
     switch (prevIndex) {
       case 30:
         if (activeProtags[0] === protagRed) {
-          redLeverSwitched = true;
           redLevers -= 1;
           redOrbs -= 1;
           redOrbsUsed += 1;
@@ -892,7 +705,6 @@ tutorial.prototype = {
         }
       case 43:
         if (activeProtags[0] === protagGreen) {
-          greenLeverSwitched = true;
           greenLevers -= 1;
           greenOrbs -= 1;
           greenOrbsUsed += 1;
@@ -902,7 +714,6 @@ tutorial.prototype = {
         }
       case 56:
         if (activeProtags[0] === protagBlue) {
-          blueLeverSwitched = true;
           blueLevers -= 1;
           blueOrbs -= 1;
           blueOrbsUsed += 1;
@@ -917,15 +728,21 @@ tutorial.prototype = {
   },
 
   winLevel: function() {
-    levelWon = true;
-
+    // levelWon = true;
     mapColor.setTileIndexCallback(124, function(){})
 
     allProtags.forEach(function(protag) {
       protag.animations.play('win')
     });
+    cachedScore += levelScore;
 
-    game.state.start("mainMenuState")
+    timeEnd = new Date();
+    timeDiff = timeEnd-timeStart
+    levelBonus = 1000;
+    timePointsPossible = 2000;
+    currentLevel = "level_2"
+
+    game.state.start("betweenLevels", true, false, cachedScore, playerName, currentLevel, timeDiff, levelBonus, timePointsPossible)
   },
 
 
@@ -1024,7 +841,6 @@ tutorial.prototype = {
 
       pauseItem2.alpha = 1
 
-      enterButton.reset(true);
       enterButton.onDown.add(pressEnter)
 
 
@@ -1040,46 +856,6 @@ tutorial.prototype = {
       cursors.up.reset(true);
       cursors.down.reset(true);
       enterButton.reset(true);
-      enterButton.onDown.add(function() {
-        textIndex += 1;
-        switch(textIndex){
-          case 3:
-          // "Good. Now collect one of the red orbs."
-            arrow1.alpha = 1;
-            break;
-          case 4:
-            arrow1.alpha = 0;
-            break;
-          case 5:
-            arrow1.x = 480;
-            arrow1.y = 512;
-            arrow1.alpha = 1;
-            break;
-          case 5:
-            arrow1.alpha = 0;
-            break;
-          case 7:
-            arrow3.alpha = 1;
-            break;
-          case 8:
-            arrow1.alpha = 0;
-            arrow2.alpha = 0
-            arrow3.alpha = 0;
-            break;
-          case 13:
-            arrow1.x = 736;
-            arrow1.y = 512;
-            arrow1.alpha = 1;
-            break;
-          case 14:
-            arrow1.alpha = 0;
-            break;
-
-
-          default:
-            break;
-        }
-      })
     }
   },
 
