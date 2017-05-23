@@ -1,10 +1,7 @@
 * {
 	box-sizing: border-box;
-}
 
-/*.title {
-	display: block;
-}*/
+}
 
 .redBorder {
 	border: 3px solid #FF0000
@@ -15,7 +12,8 @@
 }
 
 .blueBorder {
-	border: 3px solid #0000FF
+	border: 3px solid #0000FF;
+	background-color: #000000;
 }
 
 
@@ -75,9 +73,51 @@ main {
 	width: 100%;
 	min-width: 1000px;
 }
+.instructionBox {
+	/*display:flex;*/
+	justify-content: center;
+	background-color: #000000;
+	color: #FFFFFF;
+	margin: 45px;
+}
+.instructionContainer {
+	font-family: 'VT323', monospace;
+	margin: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	min-height:300px;
+}
+
+
+.instructionHeader {
+	font-size: 35px;
+	margin-top: 30px;
+}
+.instructionMain {
+	color: #FFFFFF;
+	font-size: 22px;
+	line-height: 1.5em;
+	/*margin-top: 100px;*/
+}
 
 footer {
 	background-color: #000000;
 	height: 20vh;
+}
 
+a {
+	text-decoration: none;
+	text-decoration-color: none;
+	text-decoration-style: none;
+}
+
+a:hover {
+	text-decoration:underline;
+	text-decoration-color: #FFFFFF;
+}
+.linkToSite {
+	margin-top: 20px;
+	font-size: 23px;
 }

@@ -368,6 +368,7 @@ level_1.prototype = {
 
 
   update: function() {
+    
 
     /////////////////////////////////////////////////////////////////////
     ////                  ////////////////////////////////////////////////
@@ -861,7 +862,7 @@ level_1.prototype = {
 
   render: function() {
 
-    // game.debug.layer(layerColor);
+    game.debug.layer(layerColor);
 
   }
 
